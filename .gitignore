@@ -1,3 +1,7 @@
+# Unicode Data (UNIDATA)
+*.txt
+
+
 # Logs
 logs
 *.log

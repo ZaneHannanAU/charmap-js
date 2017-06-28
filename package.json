@@ -1,0 +1,26 @@
+{
+  "name": "charmap-js",
+  "version": "0.0.0",
+  "description": "Fetch unicode data, check unicode characters in the browser and the server.",
+  "main": "charmap.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ZaneHannanAU/charmap-js.git"
+  },
+  "keywords": [
+    "charmap",
+    "unicode",
+    "utf",
+    "json",
+    "string"
+  ],
+  "author": "ZaneHannanAU",
+  "license": "GPL-3.0",
+  "bugs": {
+    "url": "https://github.com/ZaneHannanAU/charmap-js/issues"
+  },
+  "homepage": "https://github.com/ZaneHannanAU/charmap-js#readme"
+}
