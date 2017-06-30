@@ -71,9 +71,9 @@ let MD_ORDER = [
     ['BLOCK', 'Block'], ':-',
     ({MIN, MAX, block}) => U(MIN+' \u2192 '+MAX+': '+block)
   ],
-  [['mapping', 'Mapping'],':-',map=>U(map)],
+  [['mapping', 'Mapping'], ':-', map=>U(map)],
   [['BIDI'], ':-', ([s, l]) => l ? `${s} (${l})` : s],
-  [['mirrored', 'Mirrored'],'-',y=>y==='Y'],
+  [['mirrored', 'Mirrored'], '-', y=> y === 'Y' ? 'Y' : ''],
   [['numeric_value', 'Numeric'], '-:', n=>n||''],
   [['uppercase_mapping','Upper'],'-', u=>U(u)],
   [['lowercase_mapping', 'Lower'], '-', l=>U(l)],
@@ -255,8 +255,8 @@ class CharMap {
     if (typeof begin === typeof end && typeof begin === 'number') {
       // nothing doing
     } else if (typeof begin === 'object' && begin instanceof Block) {
-      begin = begin.min
-      end = begin.max
+      end = parseInt(begin.MAX, 16)
+      begin = parseInt(begin.MIN, 16)
     } else if (/[0-9A-F]{4,6}(\/[0-9A-F]{4,6})?/.test(begin)) {
       let [, start, finish] = /[^0-9A-F]*([0-9A-F]{4,6})(?:[\/\.-]([0-9A-F]{4,6}))?[^0-9A-F]*/.exec(begin)
       begin = parseInt(start, 16)
@@ -280,7 +280,7 @@ class CharMap {
       let a = []
       a.push(i)
       while (i++ < c) a.push(i);
-      return this.get(a)
+      return this.get(...a)
     }
   }
 
