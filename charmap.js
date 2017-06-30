@@ -252,11 +252,14 @@ class CharMap {
   }
 
   range(begin, end, cb, next) {
-    if (typeof begin === 'object' && begin instanceof Block) {
+    if (typeof begin === typeof end && typeof begin === 'number') {
+      // nothing doing
+    } else if (typeof begin === 'object' && begin instanceof Block) {
       begin = begin.min
       end = begin.max
     } else if (/[0-9A-F]{4,6}(\/[0-9A-F]{4,6})?/.test(begin)) {
-      [, begin, finish] = /[^0-9A-F]*([0-9A-F]{4,6})(?:[\/\.-]([0-9A-F]{4,6}))?[^0-9A-F]*/.exec(begin)
+      let [, start, finish] = /[^0-9A-F]*([0-9A-F]{4,6})(?:[\/\.-]([0-9A-F]{4,6}))?[^0-9A-F]*/.exec(begin)
+      begin = parseInt(start, 16)
       if (!end && !finish) end = parseInt(begin, 16) + 0x100
       else if (!end) end = parseInt(finish, 16)
       else end = parseInt(end, 16);
