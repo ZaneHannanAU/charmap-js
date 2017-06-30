@@ -61,7 +61,9 @@ let U = u => u ? u.replace(/([0-9A-F]{4,6})/g, 'U+$1') : ''
 let MD_ORDER = [
   [['value', 'Value'], '-:',v=>'U+'+v],
   [['aliases', 'Aliases'], ':-', a=>a.reduce(
-    (s, {alias: a, type: t}, i) => `${s}${i?', ':''}${t}: ${a}`,
+    (s, {alias: a, type: t}, i) => `${s}${
+      i && t !== 'name' ? '; '+t.replace(/_/g,' ')+': ' : ''
+    }${a.toLowerCase()}`,
     ''
   )],
   [['GC', 'Category'], ':-', ([s, l]) => l ? `${s} (${l})` : s],
@@ -77,6 +79,7 @@ let MD_ORDER = [
   [['lowercase_mapping', 'Lower'], '-', l=>U(l)],
   [['titlecase_mapping', 'Title'], '-', t=>U(t)]
 ]
+
 class CharList extends Array {
   constructor(chars) {
     super(...chars)
