@@ -94,6 +94,9 @@ class Char {
         type: keys[11] }
     ].filter(n => n.alias);
   }
+  get GC() {return [this.category, this[GC]];}
+  get BIDI() {return [this.bidirectional_category, this[BIDI]];}
+  get BLOCK() {return this[BLOCK];}
 
   allAliases(joiner = '\n') {
     return this.aliases.map(({alias}) => alias).join(joiner)
@@ -138,6 +141,7 @@ class Char {
       keys.find(k=>k===this.bidirectional_category)
     ]
   }
+
   setGC(obj, keys = Object.keys(obj)) {
     return this[GC] = obj[
       keys.find(k=>k===this.category)

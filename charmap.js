@@ -57,6 +57,46 @@ let datatest = (p) => new Promise((resolve, reject) => {
     })
   }
 });
+let U = u => u ? u.replace(/([0-9A-F]{4,6})/g, 'U+$1') : ''
+let MD_ORDER = [
+  [['value', 'Value'], '-:',v=>'U+'+v],
+  [['aliases', 'Aliases'], ':-', a=>a.reduce(
+    (s, {alias: a, type: t}, i) => `${s}${i?', ':''}${t}: ${a}`,
+    ''
+  )],
+  [['GC', 'Category'], ':-', ([s, l]) => l ? `${s} (${l})` : s],
+  [
+    ['BLOCK', 'Block'], ':-',
+    ({MIN, MAX, block}) => U(MIN+' \u2192 '+MAX+': '+block)
+  ],
+  [['mapping', 'Mapping'],':-',map=>U(map)],
+  [['BIDI'], ':-', ([s, l]) => l ? `${s} (${l})` : s],
+  [['mirrored', 'Mirrored'],'-',y=>y==='Y'],
+  [['numeric_value', 'Numeric'], '-:', n=>n||''],
+  [['uppercase_mapping','Upper'],'-', u=>U(u)],
+  [['lowercase_mapping', 'Lower'], '-', l=>U(l)],
+  [['titlecase_mapping', 'Title'], '-', t=>U(t)]
+]
+class CharList extends Array {
+  constructor(chars) {
+    super(...chars)
+  }
+  /** @method toMD
+    * @arg {array[[prop, title], align, handler]} order the output table
+    */
+  toMD(order = MD_ORDER) {
+    return this.reduce((acc, char, iter) => {
+      if (iter === 0) {
+        acc += order.reduce((t, [[p, title = p]]) => t+'|'+title, '\n\n')
+        acc += order.reduce((a, [, align = '-']) => a+'|'+align,'|\n')+'|\n'
+      };
+      for (let [[prop],, cb] of order) {
+        acc += ('|'+cb(char[prop]))
+      }
+      return acc+'|\n'
+    }, '')
+  }
+}
 
 class CharMap {
   /** @class CharMap
@@ -201,7 +241,7 @@ class CharMap {
 
     if (nums.size) {
       if (nums.size > 1)
-        return this.chars.filter(({num}) => nums.has(num));
+        return new CharList(this.chars.filter(({num}) => nums.has(num)));
       return this.chars.filter(({num}) => nums.has(num))[0];
     } else {
       throw new SyntaxError('Must provide at least one argument')
