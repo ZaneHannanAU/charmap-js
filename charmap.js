@@ -85,19 +85,20 @@ class CharList extends Array {
     super(...chars)
   }
   /** @method toMD
-    * @arg {array[[prop, title], align, handler]} order the output table
+    * @arg {arr[arr[[prop, title], align, handler]]} order the output table
+    * @arg {string} sep - the table separator
     */
-  toMD(order = MD_ORDER) {
+  toMD(order = MD_ORDER, sep = '|') {
     return this.reduce((acc, char, iter) => {
       if (iter === 0) {
-        acc += order.reduce((t, [[p, title = p]]) => t+'|'+title, '\n\n')
-        acc += order.reduce((a, [, align = '-']) => a+'|'+align,'|\n')+'|\n'
+        acc += order.reduce((t, [[p, title = p]]) => t+sep+title, '\n\n')
+        acc += order.reduce((a, [, align = '-']) => a+sep+align,sep+'\n')+sep+'\n'
       };
       for (let [[prop],, cb] of order) {
-        acc += ('|'+cb(char[prop]))
+        acc += (sep+cb(char[prop]))
       }
-      return acc+'|\n'
-    }, '')
+      return acc+sep+'\n'
+    }, '').replace(/\|{2,}$/gm, sep)
   }
 }
 
@@ -324,14 +325,14 @@ class CharMap {
       char
       ) => console.log(require('util').inspect(char, {colors:true}))
   ) {
-    return this.chars.filter(
+    return new CharList(this.chars.filter(
       char => char.aliases.some(({alias}) => {
         if (compare(alias, str, regex)) {
           cb(char)
           return true
         } else return false
       })
-    )
+    ))
   }
 
   /** @method find_middleware
